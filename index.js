@@ -40,17 +40,28 @@ function filterFile(inputDir, outputDir, filename) {
 
   filteredArray.sort((a,b) => (a.sortIndex > b.sortIndex) ? 1 : ((b.sortIndex > a.sortIndex) ? -1 : 0));
 
+  // console.log(filteredArray)
+
   let results = []
   let pointData = ''
-  filteredArray.map(data => {
+  filteredArray.map((data, key, array) => {
     if (data.type === 'name') {
       if (pointData !== '') {
         results.push(pointData.trim()) 
       }
       pointData = ''
       pointData += data.value + ' '
+    } else if (data.type === 'h') {
+      if (array[key + 1] && array[key + 1].type === 'depth') {
+        pointData += (+data.value + +array[key + 1].value).toFixed(4) + ' '
+      } else {
+        pointData += data.value + ' '
+      }
     } else {
       pointData += data.value + ' '
+    }
+    if (array.length === key + 1) {
+      results.push(pointData.trim())
     }
   })
 
